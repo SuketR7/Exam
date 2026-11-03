@@ -1,0 +1,29 @@
+#include <iostream>
+
+using namespace std;
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high], i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] <= pivot) swap(arr[++i], arr[j]);
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+int randomizedSelect(int arr[], int low, int high, int i) {
+    if (low == high) return arr[low];
+    int q = partition(arr, low, high);
+    int k = q - low + 1;
+
+    if (i == k) return arr[q];
+    if (i < k) return randomizedSelect(arr, low, q - 1, i);
+    return randomizedSelect(arr, q + 1, high, i - k);
+}
+
+int main() {
+    int arr[] = {12, 3, 5, 7, 4, 19, 26};
+    int i = 3; // 3rd smallest element
+    cout << "Result: " << randomizedSelect(arr, 0, 6, i) << endl;
+    return 0;
+}
