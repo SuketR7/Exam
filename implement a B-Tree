@@ -1,0 +1,58 @@
+#include <iostream>
+
+using namespace std;
+
+struct Node {
+    int keys[3];
+    Node* child[4];
+    int n;
+    bool leaf;
+
+    Node(bool isLeaf) {
+        leaf = isLeaf;
+        n = 0;
+        for (int i = 0; i < 4; i++) child[i] = nullptr;
+    }
+};
+
+void traverse(Node* root) {
+    if (!root) return;
+    int i;
+    for (i = 0; i < root->n; i++) {
+        if (!root->leaf) traverse(root->child[i]);
+        cout << root->keys[i] << " ";
+    }
+    if (!root->leaf) traverse(root->child[i]);
+}
+
+void insert(Node*& root, int key) {
+    if (root == nullptr) {
+        root = new Node(true);
+        root->keys[0] = key;
+        root->n = 1;
+        return;
+    }
+
+    // Insert into leaf node simply
+    int i = root->n - 1;
+    while (i >= 0 && root->keys[i] > key) {
+        root->keys[i + 1] = root->keys[i];
+        i--;
+    }
+    root->keys[i + 1] = key;
+    root->n++;
+}
+
+int main() {
+    Node* root = nullptr;
+
+    insert(root, 10);
+    insert(root, 20);
+    insert(root, 5);
+
+    cout << "B-Tree Traversal: ";
+    traverse(root);
+    cout << endl;
+
+    return 0;
+}
