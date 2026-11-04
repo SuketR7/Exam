@@ -1,0 +1,71 @@
+#include <iostream>
+using namespace std;
+const int MAX_NODES = 1000;
+struct Node {
+    int children[256]; 
+    bool isEndOfSuffix;
+
+    Node() {
+        isEndOfSuffix = false;
+        for (int i = 0; i < 256; i++) {
+            children[i] = -1;
+        }
+    }
+};
+Node tree[MAX_NODES];
+int nodeCount = 1; 
+
+void insertSuffix(const char suffix[]) {
+    int current = 0; // Start at root node
+
+    for (int i = 0; suffix[i] != '\0'; i++) {
+        unsigned char ch = suffix[i];
+
+        
+        if (tree[current].children[ch] == -1) {
+            tree[current].children[ch] = nodeCount++;
+        }
+
+        
+        current = tree[current].children[ch];
+    }
+
+    tree[current].isEndOfSuffix = true;
+}
+
+
+void buildSuffixTrie(const char text[]) {
+    int length = 0;
+    while (text[length] != '\0') length++;
+
+   
+    for (int i = 0; i < length; i++) {
+        insertSuffix(text + i);
+    }
+}
+void printTrie(int u, char path[], int depth) {
+    for (int c = 0; c < 256; c++) {
+        int v = tree[u].children[c];
+        if (v != -1) {
+            path[depth] = (char)c;
+            path[depth + 1] = '\0';
+            cout << "Path: " << path << endl;
+            printTrie(v, path, depth + 1);
+        }
+    }
+}
+
+int main() {
+    char text[100];
+
+    cout << "Enter text: ";
+    cin >> text;
+
+    buildSuffixTrie(text);
+
+    cout << "\nSuffix Trie paths:\n";
+    char path[100];
+    printTrie(0, path, 0);
+
+    return 0;
+}
